@@ -1,0 +1,9 @@
+*.log
+.vscode
+bin/
+*.pb.go
+*.log
+.env
+.DS_Store
+proto/
+vendor/
