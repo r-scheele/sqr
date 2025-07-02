@@ -89,6 +89,40 @@
         ]
       }
     },
+    "/v1/logout": {
+      "post": {
+        "summary": "Logout user",
+        "description": "Use this API to logout user and invalidate session",
+        "operationId": "Sqr_LogoutUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbLogoutUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbLogoutUserRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Sqr"
+        ]
+      }
+    },
     "/v1/refresh_token": {
       "post": {
         "summary": "Refresh access token",
@@ -365,6 +399,22 @@
         "refreshTokenExpiresAt": {
           "type": "string",
           "format": "date-time"
+        }
+      }
+    },
+    "pbLogoutUserRequest": {
+      "type": "object",
+      "properties": {
+        "refreshToken": {
+          "type": "string"
+        }
+      }
+    },
+    "pbLogoutUserResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
         }
       }
     },

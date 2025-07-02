@@ -118,6 +118,12 @@ func (g *GRPCRateLimiter) getDefaultRules() map[string]RateLimitRule {
 			Window:  time.Minute,
 			Scope:   "user",
 		},
+		"/pb.Sqr/LogoutUser": {
+			Pattern: "/pb.Sqr/LogoutUser",
+			RPS:     10, // 10 logout attempts per minute per user
+			Window:  time.Minute,
+			Scope:   "user",
+		},
 		"/pb.Sqr/UpdateTenantProfile": {
 			Pattern: "/pb.Sqr/UpdateTenantProfile",
 			RPS:     30, // 30 updates per minute per user

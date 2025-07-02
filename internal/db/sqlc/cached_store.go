@@ -193,3 +193,48 @@ func (s *CachedStore) UpdateTenantProfile(ctx context.Context, arg UpdateTenantP
 
 	return profile, nil
 }
+
+// Session management with cache invalidation
+func (s *CachedStore) DeactivateSession(ctx context.Context, sessionToken string) error {
+	// First, get the session info before deactivating (for cache invalidation)
+	session, sessionErr := s.SQLStore.GetUserSessionByToken(ctx, sessionToken)
+	
+	// Deactivate the session
+	err := s.SQLStore.DeactivateSession(ctx, sessionToken)
+	if err != nil {
+		return err
+	}
+
+	// Invalidate cache entries for this session
+	sessionTokenKey := cache.UserSessionKey(sessionToken)
+	s.cache.Delete(ctx, sessionTokenKey)
+
+	// If we successfully got the session info, also invalidate the ID-based cache
+	if sessionErr == nil {
+		sessionIDKey := cache.UserSessionKey(fmt.Sprintf("%d", session.ID))
+		s.cache.Delete(ctx, sessionIDKey)
+	}
+
+	return nil
+}
+
+func (s *CachedStore) DeactivateUserSessions(ctx context.Context, userID int64) error {
+	err := s.SQLStore.DeactivateUserSessions(ctx, userID)
+	if err != nil {
+		return err
+	}
+
+	// Note: For bulk operations like this, we could implement cache pattern matching
+	// or use cache tags, but for now we'll rely on TTL expiration
+	// Individual session invalidation would require knowing all session tokens for a user
+
+	return nil
+}
+
+// Cache management methods
+func (s *CachedStore) InvalidateUserCache(ctx context.Context, userID int64) {
+	// Invalidate user-related caches
+	s.cache.Delete(ctx, cache.UserKey(userID))
+	s.cache.Delete(ctx, cache.TenantProfileKey(userID))
+	// Note: We could add more user-related cache invalidations here
+}
