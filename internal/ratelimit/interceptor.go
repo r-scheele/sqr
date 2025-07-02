@@ -112,6 +112,12 @@ func (g *GRPCRateLimiter) getDefaultRules() map[string]RateLimitRule {
 			Window:  time.Minute,
 			Scope:   "ip",
 		},
+		"/pb.Sqr/RefreshToken": {
+			Pattern: "/pb.Sqr/RefreshToken",
+			RPS:     20, // 20 token refresh per minute per user
+			Window:  time.Minute,
+			Scope:   "user",
+		},
 		"/pb.Sqr/UpdateTenantProfile": {
 			Pattern: "/pb.Sqr/UpdateTenantProfile",
 			RPS:     30, // 30 updates per minute per user
