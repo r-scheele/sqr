@@ -17,8 +17,9 @@ import (
 
 func newTestServer(t *testing.T, store db.Store) *Server {
 	config := util.Config{
-		TokenSymmetricKey:   util.RandomString(32),
-		AccessTokenDuration: time.Minute,
+		TokenSymmetricKey:    util.RandomString(32),
+		AccessTokenDuration:  time.Minute,
+		RefreshTokenDuration: time.Hour, // Add missing refresh token duration
 	}
 
 	// Create mock task distributor for tests
@@ -35,8 +36,9 @@ func newTestServer(t *testing.T, store db.Store) *Server {
 // For tests that need access to the task distributor
 func newTestServerWithTaskDistributor(t *testing.T, store db.Store, taskDistributor *mockwk.MockTaskDistributor) *Server {
 	config := util.Config{
-		TokenSymmetricKey:   util.RandomString(32),
-		AccessTokenDuration: time.Minute,
+		TokenSymmetricKey:    util.RandomString(32),
+		AccessTokenDuration:  time.Minute,
+		RefreshTokenDuration: time.Hour, // Add missing refresh token duration
 	}
 
 	// Rate limiter is optional for tests (pass nil)

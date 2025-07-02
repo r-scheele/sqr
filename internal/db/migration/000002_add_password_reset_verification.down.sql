@@ -1,0 +1,3 @@
+-- This migration cannot be easily reversed as PostgreSQL doesn't support removing enum values
+-- Would require recreating the enum type and all dependent tables
+-- For development, you can recreate the database if needed

@@ -72,6 +72,33 @@ func (q *Queries) DeleteUserVerification(ctx context.Context, id int64) error {
 	return err
 }
 
+const getPasswordResetVerification = `-- name: GetPasswordResetVerification :one
+SELECT id, user_id, verification_type, verification_status, verification_data, verified_at, verified_by, created_at FROM user_verifications 
+WHERE verification_type = 'password_reset'
+  AND verification_status = 'pending'
+  AND verification_data->>'secret_code' = $1::text
+  AND created_at > NOW() - INTERVAL '1 hour'
+ORDER BY created_at DESC
+LIMIT 1
+`
+
+// Get password reset verification by secret code
+func (q *Queries) GetPasswordResetVerification(ctx context.Context, dollar_1 string) (UserVerification, error) {
+	row := q.db.QueryRow(ctx, getPasswordResetVerification, dollar_1)
+	var i UserVerification
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.VerificationType,
+		&i.VerificationStatus,
+		&i.VerificationData,
+		&i.VerifiedAt,
+		&i.VerifiedBy,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const getUserVerificationByID = `-- name: GetUserVerificationByID :one
 SELECT id, user_id, verification_type, verification_status, verification_data, verified_at, verified_by, created_at FROM user_verifications 
 WHERE id = $1 LIMIT 1

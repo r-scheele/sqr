@@ -55,6 +55,40 @@
         ]
       }
     },
+    "/v1/forgot_password": {
+      "post": {
+        "summary": "Forgot password",
+        "description": "Use this API to request password reset",
+        "operationId": "Sqr_ForgotPassword",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbForgotPasswordResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbForgotPasswordRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Sqr"
+        ]
+      }
+    },
     "/v1/login_user": {
       "post": {
         "summary": "Login user",
@@ -149,6 +183,40 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/pbRefreshTokenRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Sqr"
+        ]
+      }
+    },
+    "/v1/reset_password": {
+      "post": {
+        "summary": "Reset password",
+        "description": "Use this API to reset password using reset token",
+        "operationId": "Sqr_ResetPassword",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbResetPasswordResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbResetPasswordRequest"
             }
           }
         ],
@@ -358,6 +426,22 @@
         }
       }
     },
+    "pbForgotPasswordRequest": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        }
+      }
+    },
+    "pbForgotPasswordResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
     "pbGetTenantProfileResponse": {
       "type": "object",
       "properties": {
@@ -435,6 +519,28 @@
         "accessTokenExpiresAt": {
           "type": "string",
           "format": "date-time"
+        }
+      }
+    },
+    "pbResetPasswordRequest": {
+      "type": "object",
+      "properties": {
+        "resetToken": {
+          "type": "string"
+        },
+        "newPassword": {
+          "type": "string"
+        },
+        "confirmPassword": {
+          "type": "string"
+        }
+      }
+    },
+    "pbResetPasswordResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
         }
       }
     },

@@ -66,3 +66,13 @@ LIMIT $3 OFFSET $4;
 -- name: DeleteUserVerification :exec
 DELETE FROM user_verifications 
 WHERE id = $1;
+
+-- Get password reset verification by secret code
+-- name: GetPasswordResetVerification :one
+SELECT * FROM user_verifications 
+WHERE verification_type = 'password_reset'
+  AND verification_status = 'pending'
+  AND verification_data->>'secret_code' = $1::text
+  AND created_at > NOW() - INTERVAL '1 hour'
+ORDER BY created_at DESC
+LIMIT 1;

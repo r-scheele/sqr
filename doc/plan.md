@@ -60,7 +60,7 @@ rpc ResetPassword(ResetPasswordRequest) returns (ResetPasswordResponse)
 - Redis sessions for scalability ✅
 - Background email tasks (Asynq) ✅
 - Rate limiting (implemented ✅)
-- Simple atomic operations (no complex transactions needed)
+- Simple atomic operations (no complex transactions needed, but used if necessary) ✅
 
 ---
 

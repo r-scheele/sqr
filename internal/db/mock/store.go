@@ -3337,6 +3337,21 @@ func (mr *MockStoreMockRecorder) GetOpenDisputes(arg0, arg1 interface{}) *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOpenDisputes", reflect.TypeOf((*MockStore)(nil).GetOpenDisputes), arg0, arg1)
 }
 
+// GetPasswordResetVerification mocks base method.
+func (m *MockStore) GetPasswordResetVerification(arg0 context.Context, arg1 string) (db.UserVerification, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetPasswordResetVerification", arg0, arg1)
+	ret0, _ := ret[0].(db.UserVerification)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetPasswordResetVerification indicates an expected call of GetPasswordResetVerification.
+func (mr *MockStoreMockRecorder) GetPasswordResetVerification(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPasswordResetVerification", reflect.TypeOf((*MockStore)(nil).GetPasswordResetVerification), arg0, arg1)
+}
+
 // GetPaymentAuditLogs mocks base method.
 func (m *MockStore) GetPaymentAuditLogs(arg0 context.Context, arg1 db.GetPaymentAuditLogsParams) ([]db.GetPaymentAuditLogsRow, error) {
 	m.ctrl.T.Helper()

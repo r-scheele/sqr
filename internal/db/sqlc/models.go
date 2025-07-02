@@ -1254,6 +1254,7 @@ const (
 	VerificationTypeEnumNin             VerificationTypeEnum = "nin"
 	VerificationTypeEnumLicense         VerificationTypeEnum = "license"
 	VerificationTypeEnumBackgroundCheck VerificationTypeEnum = "background_check"
+	VerificationTypeEnumPasswordReset   VerificationTypeEnum = "password_reset"
 )
 
 func (e *VerificationTypeEnum) Scan(src interface{}) error {

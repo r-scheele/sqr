@@ -455,6 +455,8 @@ type Querier interface {
 	GetNotificationsByTypeForUser(ctx context.Context, arg GetNotificationsByTypeForUserParams) ([]Notification, error)
 	// Get open disputes
 	GetOpenDisputes(ctx context.Context, arg GetOpenDisputesParams) ([]GetOpenDisputesRow, error)
+	// Get password reset verification by secret code
+	GetPasswordResetVerification(ctx context.Context, dollar_1 string) (UserVerification, error)
 	// Get payment audit logs
 	GetPaymentAuditLogs(ctx context.Context, arg GetPaymentAuditLogsParams) ([]GetPaymentAuditLogsRow, error)
 	// Get payment by gateway reference
