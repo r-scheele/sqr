@@ -4,6 +4,9 @@ go 1.21
 
 require (
 	github.com/aead/chacha20poly1305 v0.0.0-20201124145622-1a5aba2a8b29
+	github.com/aws/aws-sdk-go-v2 v1.9.2
+	github.com/aws/aws-sdk-go-v2/config v1.8.3
+	github.com/aws/aws-sdk-go-v2/service/s3 v1.16.1
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/golang-migrate/migrate v3.5.4+incompatible
@@ -31,6 +34,15 @@ require (
 require (
 	github.com/aead/chacha20 v0.0.0-20180709150244-8b13a72661da // indirect
 	github.com/aead/poly1305 v0.0.0-20180717145839-3fee0db0b635 // indirect
+	github.com/aws/aws-sdk-go-v2/credentials v1.4.3 // indirect
+	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.6.0 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/ini v1.2.4 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding v1.3.0 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.3.2 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.7.2 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sso v1.4.2 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sts v1.7.2 // indirect
+	github.com/aws/smithy-go v1.8.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect

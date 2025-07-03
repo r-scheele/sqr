@@ -43,9 +43,15 @@ func RunGatewayServer(
 
 	grpcMux := runtime.NewServeMux(jsonOption)
 
-	err = pb.RegisterSqrHandlerServer(ctx, grpcMux, server)
+	// Register individual service handlers
+	err = pb.RegisterAuthServiceHandlerServer(ctx, grpcMux, server.AuthService())
 	if err != nil {
-		log.Fatal().Err(err).Msg("cannot register handler server")
+		log.Fatal().Err(err).Msg("cannot register auth service handler")
+	}
+
+	err = pb.RegisterUserServiceHandlerServer(ctx, grpcMux, server.UserService())
+	if err != nil {
+		log.Fatal().Err(err).Msg("cannot register user service handler")
 	}
 
 	mux := http.NewServeMux()

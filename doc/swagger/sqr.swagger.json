@@ -1,17 +1,23 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "Sqr API",
-    "version": "1.2",
+    "title": "Auth Service API",
+    "version": "1.0",
     "contact": {
-      "name": "Tech School",
+      "name": "Habeeb Olamilekan",
       "url": "https://github.com/r-scheele",
       "email": "abdulrahmanolamilekan88@gmail.com"
     }
   },
   "tags": [
     {
-      "name": "Sqr"
+      "name": "AuthService"
+    },
+    {
+      "name": "MediaService"
+    },
+    {
+      "name": "UserService"
     }
   ],
   "consumes": [
@@ -25,7 +31,7 @@
       "post": {
         "summary": "Create new user",
         "description": "Use this API to create a new user",
-        "operationId": "Sqr_CreateUser",
+        "operationId": "AuthService_CreateUser",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -51,7 +57,7 @@
           }
         ],
         "tags": [
-          "Sqr"
+          "AuthService"
         ]
       }
     },
@@ -59,7 +65,7 @@
       "post": {
         "summary": "Forgot password",
         "description": "Use this API to request password reset",
-        "operationId": "Sqr_ForgotPassword",
+        "operationId": "AuthService_ForgotPassword",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -85,7 +91,7 @@
           }
         ],
         "tags": [
-          "Sqr"
+          "AuthService"
         ]
       }
     },
@@ -93,7 +99,7 @@
       "post": {
         "summary": "Login user",
         "description": "Use this API to login user and get access token \u0026 refresh token",
-        "operationId": "Sqr_LoginUser",
+        "operationId": "AuthService_LoginUser",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -119,7 +125,7 @@
           }
         ],
         "tags": [
-          "Sqr"
+          "AuthService"
         ]
       }
     },
@@ -127,7 +133,7 @@
       "post": {
         "summary": "Logout user",
         "description": "Use this API to logout user and invalidate session",
-        "operationId": "Sqr_LogoutUser",
+        "operationId": "AuthService_LogoutUser",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -153,7 +159,7 @@
           }
         ],
         "tags": [
-          "Sqr"
+          "AuthService"
         ]
       }
     },
@@ -161,7 +167,7 @@
       "post": {
         "summary": "Refresh access token",
         "description": "Use this API to refresh access token using refresh token",
-        "operationId": "Sqr_RefreshToken",
+        "operationId": "AuthService_RefreshToken",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -187,7 +193,7 @@
           }
         ],
         "tags": [
-          "Sqr"
+          "AuthService"
         ]
       }
     },
@@ -195,7 +201,7 @@
       "post": {
         "summary": "Reset password",
         "description": "Use this API to reset password using reset token",
-        "operationId": "Sqr_ResetPassword",
+        "operationId": "AuthService_ResetPassword",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -221,7 +227,7 @@
           }
         ],
         "tags": [
-          "Sqr"
+          "AuthService"
         ]
       }
     },
@@ -229,7 +235,7 @@
       "patch": {
         "summary": "Update tenant profile",
         "description": "Update tenant profile information",
-        "operationId": "Sqr_UpdateTenantProfile",
+        "operationId": "UserService_UpdateTenantProfile",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -255,7 +261,7 @@
           }
         ],
         "tags": [
-          "Sqr"
+          "UserService"
         ]
       }
     },
@@ -263,7 +269,7 @@
       "get": {
         "summary": "Get tenant profile",
         "description": "Get tenant profile by user ID",
-        "operationId": "Sqr_GetTenantProfile",
+        "operationId": "UserService_GetTenantProfile",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -288,7 +294,7 @@
           }
         ],
         "tags": [
-          "Sqr"
+          "UserService"
         ]
       }
     },
@@ -296,7 +302,7 @@
       "patch": {
         "summary": "Update user",
         "description": "Use this API to update user",
-        "operationId": "Sqr_UpdateUser",
+        "operationId": "AuthService_UpdateUser",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -322,7 +328,7 @@
           }
         ],
         "tags": [
-          "Sqr"
+          "AuthService"
         ]
       }
     },
@@ -330,7 +336,7 @@
       "get": {
         "summary": "Verify email",
         "description": "Use this API to verify user's email address",
-        "operationId": "Sqr_VerifyEmail",
+        "operationId": "AuthService_VerifyEmail",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -361,12 +367,20 @@
           }
         ],
         "tags": [
-          "Sqr"
+          "AuthService"
         ]
       }
     }
   },
   "definitions": {
+    "pbAddPropertyMediaResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
     "pbCreateUserRequest": {
       "type": "object",
       "properties": {
@@ -426,6 +440,14 @@
         }
       }
     },
+    "pbDeleteMediaResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
     "pbForgotPasswordRequest": {
       "type": "object",
       "properties": {
@@ -442,11 +464,82 @@
         }
       }
     },
+    "pbGetMediaResponse": {
+      "type": "object",
+      "properties": {
+        "mediaFile": {
+          "$ref": "#/definitions/pbMediaFile"
+        }
+      }
+    },
+    "pbGetMediaStatsResponse": {
+      "type": "object",
+      "properties": {
+        "totalFiles": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "totalSize": {
+          "type": "string",
+          "format": "int64"
+        },
+        "fileTypes": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+    },
+    "pbGetPropertyMediaResponse": {
+      "type": "object",
+      "properties": {
+        "mediaFiles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/pbMediaFile"
+          }
+        }
+      }
+    },
     "pbGetTenantProfileResponse": {
       "type": "object",
       "properties": {
         "profile": {
           "$ref": "#/definitions/pbTenantProfile"
+        }
+      }
+    },
+    "pbGetUploadURLResponse": {
+      "type": "object",
+      "properties": {
+        "uploadUrl": {
+          "type": "string"
+        },
+        "mediaId": {
+          "type": "string"
+        },
+        "uploadHeaders": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "pbListMediaResponse": {
+      "type": "object",
+      "properties": {
+        "mediaFiles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/pbMediaFile"
+          }
+        },
+        "totalCount": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -502,6 +595,118 @@
         }
       }
     },
+    "pbMediaFile": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string"
+        },
+        "filename": {
+          "type": "string"
+        },
+        "originalFilename": {
+          "type": "string"
+        },
+        "fileType": {
+          "type": "string"
+        },
+        "mimeType": {
+          "type": "string"
+        },
+        "fileSize": {
+          "type": "string",
+          "format": "int64"
+        },
+        "width": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "height": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "duration": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "cdnUrl": {
+          "type": "string"
+        },
+        "altText": {
+          "type": "string"
+        },
+        "caption": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "uploadStatus": {
+          "type": "string"
+        },
+        "uploadProgress": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "pbMediaMetadata": {
+      "type": "object",
+      "properties": {
+        "filename": {
+          "type": "string"
+        },
+        "contentType": {
+          "type": "string"
+        },
+        "fileSize": {
+          "type": "string",
+          "format": "int64"
+        },
+        "purpose": {
+          "type": "string"
+        },
+        "relatedId": {
+          "type": "string",
+          "format": "int64"
+        },
+        "altText": {
+          "type": "string"
+        },
+        "caption": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "pbMediaOrder": {
+      "type": "object",
+      "properties": {
+        "mediaId": {
+          "type": "string"
+        },
+        "orderIndex": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
     "pbRefreshTokenRequest": {
       "type": "object",
       "properties": {
@@ -541,6 +746,21 @@
       "properties": {
         "message": {
           "type": "string"
+        }
+      }
+    },
+    "pbSearchMediaResponse": {
+      "type": "object",
+      "properties": {
+        "mediaFiles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/pbMediaFile"
+          }
+        },
+        "totalCount": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -631,6 +851,22 @@
         }
       },
       "title": "Tenant Profile model"
+    },
+    "pbUpdateMediaResponse": {
+      "type": "object",
+      "properties": {
+        "mediaFile": {
+          "$ref": "#/definitions/pbMediaFile"
+        }
+      }
+    },
+    "pbUpdatePropertyMediaOrderResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
     },
     "pbUpdateTenantProfileRequest": {
       "type": "object",
@@ -737,6 +973,21 @@
           "$ref": "#/definitions/pbUser"
         }
       }
+    },
+    "pbUploadMediaResponse": {
+      "type": "object",
+      "properties": {
+        "mediaId": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "mediaFile": {
+          "$ref": "#/definitions/pbMediaFile"
+        }
+      },
+      "title": "Upload messages"
     },
     "pbUser": {
       "type": "object",
