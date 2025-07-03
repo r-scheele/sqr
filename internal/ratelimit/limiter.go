@@ -46,19 +46,15 @@ func (r *RedisLimiter) AllowWithLimits(ctx context.Context, key string, limit in
 
 	pipe := r.client.Pipeline()
 
-	// Remove expired entries
 	pipe.ZRemRangeByScore(ctx, fullKey, "0", strconv.FormatInt(windowStart.UnixNano(), 10))
 
-	// Count current requests in window
 	pipe.ZCard(ctx, fullKey)
 
-	// Add current request
 	pipe.ZAdd(ctx, fullKey, redis.Z{
 		Score:  float64(now.UnixNano()),
 		Member: fmt.Sprintf("%d-%d", now.UnixNano(), rand.Int63()),
 	})
 
-	// Set expiration
 	pipe.Expire(ctx, fullKey, window+time.Second)
 
 	results, err := pipe.Exec(ctx)
@@ -76,10 +72,10 @@ func (r *RedisLimiter) AllowWithLimits(ctx context.Context, key string, limit in
 
 	var retryAfter time.Duration
 	if !allowed {
-		// Get oldest entry to calculate retry time
+
 		oldest, err := r.client.ZRange(ctx, fullKey, 0, 0).Result()
 		if err == nil && len(oldest) > 0 {
-			oldestTime, _ := strconv.ParseInt(oldest[0][:19], 10, 64) // Extract timestamp
+			oldestTime, _ := strconv.ParseInt(oldest[0][:19], 10, 64)
 			retryAfter = time.Duration(oldestTime + window.Nanoseconds() - now.UnixNano())
 		}
 	}

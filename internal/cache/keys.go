@@ -30,7 +30,6 @@ func PropertyKey(propertyID int64) string {
 }
 
 func PropertySearchKey(query string, filters map[string]interface{}) string {
-	// Create deterministic key from search parameters
 	return fmt.Sprintf("search:properties:%s", hashParams(query, filters))
 }
 
@@ -62,7 +61,6 @@ const (
 )
 
 func hashParams(query string, filters map[string]interface{}) string {
-	// Simple hash implementation
 	return fmt.Sprintf("%d", hash(query+fmt.Sprintf("%v", filters)))
 }
 

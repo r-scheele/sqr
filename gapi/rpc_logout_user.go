@@ -19,13 +19,11 @@ func (server *Server) LogoutUser(ctx context.Context, req *pb.LogoutUserRequest)
 		return nil, invalidArgumentError(violations)
 	}
 
-	// Verify the refresh token
 	_, err := server.tokenMaker.VerifyToken(req.GetRefreshToken(), token.TokenTypeRefreshToken)
 	if err != nil {
 		return nil, status.Errorf(codes.Unauthenticated, "invalid refresh token")
 	}
 
-	// Get session to check if it exists and is valid (uses cache if available)
 	session, err := server.store.GetUserSessionByToken(ctx, req.GetRefreshToken())
 	if err != nil {
 		if errors.Is(err, db.ErrRecordNotFound) {
@@ -34,7 +32,6 @@ func (server *Server) LogoutUser(ctx context.Context, req *pb.LogoutUserRequest)
 		return nil, status.Errorf(codes.Internal, "failed to get session")
 	}
 
-	// Check if session is active
 	if !session.IsActive.Bool || !session.IsActive.Valid {
 		return nil, status.Errorf(codes.Unauthenticated, "session is already inactive")
 	}

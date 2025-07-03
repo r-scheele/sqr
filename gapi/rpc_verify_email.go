@@ -24,7 +24,7 @@ func (server *Server) VerifyEmail(ctx context.Context, req *pb.VerifyEmailReques
 		EmailID:    req.GetEmailId(),
 		SecretCode: req.GetSecretCode(),
 		AfterVerify: func(user db.User) error {
-			// Send welcome email after successful verification
+
 			taskPayload := &worker.PayloadSendWelcomeEmail{
 				Username: user.FirstName + " " + user.LastName, // Use full name as display name
 				Email:    user.Email,
@@ -39,14 +39,12 @@ func (server *Server) VerifyEmail(ctx context.Context, req *pb.VerifyEmailReques
 		},
 	}
 
-	// Execute the email verification transaction
 	result, err := server.store.VerifyEmailTx(ctx, arg)
 	if err != nil {
 		if err == db.ErrRecordNotFound {
 			return nil, status.Errorf(codes.NotFound, "verification record not found")
 		}
 
-		// Check for specific business logic errors
 		switch err.Error() {
 		case "verification record is not for email":
 			return nil, status.Errorf(codes.InvalidArgument, "verification record is not for email")

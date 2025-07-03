@@ -19,24 +19,21 @@ var (
 )
 
 func (server *Server) GetTenantProfile(ctx context.Context, req *pb.GetTenantProfileRequest) (*pb.GetTenantProfileResponse, error) {
-	// Get authenticated user info (allowing tenant and admin roles)
+
 	authPayload, err := server.authorizeUser(ctx, []string{util.TenantRole, util.AdminRole})
 	if err != nil {
 		return nil, unauthenticatedError(err)
 	}
 
-	// Get the authenticated user's details to get their ID
 	authUser, err := server.store.GetUserByEmail(ctx, authPayload.Username)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get authenticated user: %s", err)
 	}
 
-	// Authorization: users can only access their own profile or admins can access any
 	if authUser.ID != req.GetUserId() && authUser.UserType != db.UserTypeEnumAdmin {
 		return nil, status.Errorf(codes.PermissionDenied, "cannot access other user's profile")
 	}
 
-	// Verify the target user is a tenant
 	targetUser, err := server.store.GetUserByID(ctx, req.GetUserId())
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "user not found")
@@ -46,7 +43,6 @@ func (server *Server) GetTenantProfile(ctx context.Context, req *pb.GetTenantPro
 		return nil, status.Errorf(codes.InvalidArgument, "user is not a tenant")
 	}
 
-	// Get tenant profile
 	profile, err := server.store.GetTenantProfileByUserID(ctx, req.GetUserId())
 	if err != nil {
 		if err == db.ErrRecordNotFound {
@@ -63,47 +59,41 @@ func (server *Server) GetTenantProfile(ctx context.Context, req *pb.GetTenantPro
 }
 
 func (server *Server) UpdateTenantProfile(ctx context.Context, req *pb.UpdateTenantProfileRequest) (*pb.UpdateTenantProfileResponse, error) {
-	// Validate request
+
 	violations := validateUpdateTenantProfileRequest(req)
 	if violations != nil {
 		return nil, invalidArgumentError(violations)
 	}
 
-	// Get authenticated user info (only tenants can update their profile)
 	authPayload, err := server.authorizeUser(ctx, []string{util.TenantRole})
 	if err != nil {
 		return nil, unauthenticatedError(err)
 	}
 
-	// Get the authenticated user's details to get their ID
 	authUser, err := server.store.GetUserByEmail(ctx, authPayload.Username)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get authenticated user: %s", err)
 	}
 
-	// Authorization: users can only update their own profile
 	if authUser.ID != req.GetUserId() {
 		return nil, status.Errorf(codes.PermissionDenied, "cannot update other user's profile")
 	}
 
-	// Verify the user is a tenant
 	if authUser.UserType != db.UserTypeEnumTenant {
 		return nil, status.Errorf(codes.InvalidArgument, "user is not a tenant")
 	}
 
-	// Prepare update arguments based on current schema
 	arg := db.UpdateTenantProfileParams{
 		UserID: req.GetUserId(),
 	}
 
-	// Map protobuf fields to database fields
 	if req.MaxBudget != nil {
 		arg.BudgetMax = pgtype.Numeric{Valid: true}
 		arg.BudgetMax.Scan(req.GetMaxBudget())
 	}
 
 	if len(req.PreferredAreas) > 0 {
-		// Store as comma-separated string for now (you might want to use JSON)
+
 		locations := ""
 		for i, area := range req.PreferredAreas {
 			if i > 0 {
@@ -115,14 +105,14 @@ func (server *Server) UpdateTenantProfile(ctx context.Context, req *pb.UpdateTen
 	}
 
 	if req.AnnualIncome != nil {
-		// Convert annual to monthly income
+
 		monthlyIncome := req.GetAnnualIncome() / 12
 		arg.MonthlyIncome = pgtype.Numeric{Valid: true}
 		arg.MonthlyIncome.Scan(monthlyIncome)
 	}
 
 	if len(req.References) > 0 {
-		// Store as newline-separated string for now
+
 		references := ""
 		for i, ref := range req.References {
 			if i > 0 {
@@ -150,10 +140,8 @@ func (server *Server) UpdateTenantProfile(ctx context.Context, req *pb.UpdateTen
 		arg.PreviousAddress = pgtype.Text{String: req.PreviousAddresses[0], Valid: true}
 	}
 
-	// Set bedroom preferences from budget (for now - you might want to add these fields to the protobuf)
-	// This is a simplified mapping - you may want to add proper bedroom preference fields
 	if req.MaxBudget != nil {
-		// Simple logic: higher budget = more bedrooms preference
+
 		if req.GetMaxBudget() > 3000 {
 			arg.BedroomsMin = pgtype.Int4{Int32: 2, Valid: true}
 			arg.BedroomsMax = pgtype.Int4{Int32: 4, Valid: true}
@@ -164,14 +152,12 @@ func (server *Server) UpdateTenantProfile(ctx context.Context, req *pb.UpdateTen
 			arg.BedroomsMin = pgtype.Int4{Int32: 1, Valid: true}
 			arg.BedroomsMax = pgtype.Int4{Int32: 2, Valid: true}
 		}
-		
-		// Set budget min to 80% of max budget
+
 		budgetMin := req.GetMaxBudget() * 0.8
 		arg.BudgetMin = pgtype.Numeric{Valid: true}
 		arg.BudgetMin.Scan(budgetMin)
 	}
 
-	// Update profile
 	profile, err := server.store.UpdateTenantProfile(ctx, arg)
 	if err != nil {
 		if err == db.ErrRecordNotFound {

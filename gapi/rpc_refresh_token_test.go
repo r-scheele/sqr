@@ -92,7 +92,7 @@ func TestRefreshTokenAPI(t *testing.T) {
 
 			store := mockdb.NewMockStore(ctrl)
 			server := newTestServer(t, store)
-			
+
 			// Set up the token for this test case
 			refreshToken := tc.setupToken(server.tokenMaker)
 			tc.buildStubs(store, refreshToken)

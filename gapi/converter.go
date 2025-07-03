@@ -19,11 +19,11 @@ func convertUser(user db.User) *pb.User {
 func convertTenantProfile(profile db.TenantProfile) *pb.TenantProfile {
 	pbProfile := &pb.TenantProfile{
 		UserId:                      profile.UserID,
-		Username:                    "", // We'll need to get this from the user table
-		MaxBudget:                   0, // We'll map this from BudgetMax
+		Username:                    "",         // We'll need to get this from the user table
+		MaxBudget:                   0,          // We'll map this from BudgetMax
 		PreferredAreas:              []string{}, // We'll parse from PreferredLocations
 		EmploymentStatus:            "employed", // Default, we'll need to derive this
-		AnnualIncome:                0, // We'll calculate from MonthlyIncome
+		AnnualIncome:                0,          // We'll calculate from MonthlyIncome
 		References:                  []string{}, // We'll parse from References text
 		PetOwner:                    profile.PetFriendly.Bool,
 		SmokingStatus:               "non_smoker", // Default, not in current schema

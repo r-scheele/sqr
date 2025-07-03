@@ -24,11 +24,9 @@ func (server *Server) ForgotPassword(ctx context.Context, req *pb.ForgotPassword
 		return nil, invalidArgumentError(violations)
 	}
 
-	// Check if user exists
 	user, err := server.store.GetUserByEmail(ctx, req.GetEmail())
 	if err != nil {
 		if errors.Is(err, db.ErrRecordNotFound) {
-			// For security reasons, don't reveal if email exists or not
 			return &pb.ForgotPasswordResponse{
 				Message: "If an account with that email exists, a password reset link has been sent.",
 			}, nil
@@ -36,10 +34,8 @@ func (server *Server) ForgotPassword(ctx context.Context, req *pb.ForgotPassword
 		return nil, status.Errorf(codes.Internal, "failed to get user: %s", err)
 	}
 
-	// Generate reset token
 	resetToken := util.RandomString(32)
 
-	// Prepare verification data as JSON
 	verificationData := map[string]interface{}{
 		"secret_code": resetToken,
 		"email":       user.Email,
@@ -51,7 +47,6 @@ func (server *Server) ForgotPassword(ctx context.Context, req *pb.ForgotPassword
 		return nil, status.Errorf(codes.Internal, "failed to process request")
 	}
 
-	// Create password reset verification record
 	_, err = server.store.CreateUserVerification(ctx, db.CreateUserVerificationParams{
 		UserID:           user.ID,
 		VerificationType: db.VerificationTypeEnumPasswordReset,
@@ -62,7 +57,6 @@ func (server *Server) ForgotPassword(ctx context.Context, req *pb.ForgotPassword
 		return nil, status.Errorf(codes.Internal, "failed to process request")
 	}
 
-	// Send password reset email
 	taskPayload := &worker.PayloadSendPasswordResetEmail{
 		Username:   user.FirstName + " " + user.LastName,
 		Email:      user.Email,
@@ -87,7 +81,6 @@ func (server *Server) ForgotPassword(ctx context.Context, req *pb.ForgotPassword
 	}, nil
 }
 
-// validateForgotPasswordRequest validates the forgot password request
 func validateForgotPasswordRequest(req *pb.ForgotPasswordRequest) (violations []*errdetails.BadRequest_FieldViolation) {
 	if err := val.ValidateEmail(req.GetEmail()); err != nil {
 		violations = append(violations, fieldViolation("email", err))

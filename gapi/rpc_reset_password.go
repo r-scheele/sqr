@@ -21,7 +21,6 @@ func (server *Server) ResetPassword(ctx context.Context, req *pb.ResetPasswordRe
 		return nil, invalidArgumentError(violations)
 	}
 
-	// Verify reset token
 	verification, err := server.store.GetPasswordResetVerification(ctx, req.GetResetToken())
 	if err != nil {
 		if errors.Is(err, db.ErrRecordNotFound) {
@@ -30,13 +29,11 @@ func (server *Server) ResetPassword(ctx context.Context, req *pb.ResetPasswordRe
 		return nil, status.Errorf(codes.Internal, "failed to verify reset token: %s", err)
 	}
 
-	// Hash new password
 	hashedPassword, err := util.HashPassword(req.GetNewPassword())
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to hash password: %s", err)
 	}
 
-	// Update user password
 	err = server.store.UpdateUserPassword(ctx, db.UpdateUserPasswordParams{
 		ID:           verification.UserID,
 		PasswordHash: hashedPassword,
@@ -45,7 +42,6 @@ func (server *Server) ResetPassword(ctx context.Context, req *pb.ResetPasswordRe
 		return nil, status.Errorf(codes.Internal, "failed to update password: %s", err)
 	}
 
-	// Mark verification as used (verified)
 	_, err = server.store.UpdateVerificationStatus(ctx, db.UpdateVerificationStatusParams{
 		ID: verification.ID,
 		VerificationStatus: db.NullVerificationStatusEnum{
@@ -69,7 +65,6 @@ func (server *Server) ResetPassword(ctx context.Context, req *pb.ResetPasswordRe
 	}, nil
 }
 
-// validateResetPasswordRequest validates the reset password request
 func validateResetPasswordRequest(req *pb.ResetPasswordRequest) (violations []*errdetails.BadRequest_FieldViolation) {
 	if req.GetResetToken() == "" {
 		violations = append(violations, fieldViolation("reset_token", errors.New("reset token is required")))

@@ -19,7 +19,6 @@ func (server *Server) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest)
 		return nil, invalidArgumentError(violations)
 	}
 
-	// Get the user by email (assuming username is actually email in the request)
 	user, err := server.store.GetUserByEmail(ctx, req.GetUsername())
 	if err != nil {
 		if errors.Is(err, db.ErrRecordNotFound) {
@@ -28,7 +27,6 @@ func (server *Server) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest)
 		return nil, status.Errorf(codes.Internal, "failed to find user")
 	}
 
-	// Split full name if provided
 	firstName := user.FirstName
 	lastName := user.LastName
 	if req.FullName != nil {
@@ -37,20 +35,18 @@ func (server *Server) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest)
 
 	arg := db.UpdateUserParams{
 		ID:                user.ID,
-		Email:             user.Email, // Keep existing email unless updating
-		Phone:             user.Phone, // Keep existing phone
+		Email:             user.Email,
+		Phone:             user.Phone,
 		FirstName:         firstName,
 		LastName:          lastName,
-		Nin:               user.Nin,               // Keep existing NIN
-		ProfilePictureUrl: user.ProfilePictureUrl, // Keep existing profile picture
+		Nin:               user.Nin,
+		ProfilePictureUrl: user.ProfilePictureUrl,
 	}
 
-	// Update email if provided
 	if req.Email != nil {
 		arg.Email = req.GetEmail()
 	}
 
-	// Handle password update separately since it's not in UpdateUserParams
 	if req.Password != nil {
 		hashedPassword, err := util.HashPassword(req.GetPassword())
 		if err != nil {

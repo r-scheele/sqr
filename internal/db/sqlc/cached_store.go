@@ -198,7 +198,7 @@ func (s *CachedStore) UpdateTenantProfile(ctx context.Context, arg UpdateTenantP
 func (s *CachedStore) DeactivateSession(ctx context.Context, sessionToken string) error {
 	// First, get the session info before deactivating (for cache invalidation)
 	session, sessionErr := s.SQLStore.GetUserSessionByToken(ctx, sessionToken)
-	
+
 	// Deactivate the session
 	err := s.SQLStore.DeactivateSession(ctx, sessionToken)
 	if err != nil {

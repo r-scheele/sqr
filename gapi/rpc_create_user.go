@@ -28,7 +28,6 @@ func (server *Server) CreateUser(ctx context.Context, req *pb.CreateUserRequest)
 		return nil, status.Errorf(codes.Internal, "failed to hash password: %s", err)
 	}
 
-	// Split full name into first and last name
 	firstName, lastName := util.SplitFullName(req.GetFullName())
 
 	arg := db.CreateUserTxParams{
@@ -41,10 +40,9 @@ func (server *Server) CreateUser(ctx context.Context, req *pb.CreateUserRequest)
 			UserType:     db.UserTypeEnum(req.GetUserType()),
 		},
 		AfterCreate: func(user db.User) error {
-			// Generate verification secret code
+
 			secretCode := util.RandomString(32)
 
-			// Prepare verification data as JSON
 			verificationData := map[string]string{
 				"secret_code": secretCode,
 				"email":       user.Email,
@@ -55,7 +53,6 @@ func (server *Server) CreateUser(ctx context.Context, req *pb.CreateUserRequest)
 				return err
 			}
 
-			// Create user verification record for email verification
 			_, err = server.store.CreateUserVerification(ctx, db.CreateUserVerificationParams{
 				UserID:           user.ID,
 				VerificationType: db.VerificationTypeEnumEmail,
@@ -66,10 +63,8 @@ func (server *Server) CreateUser(ctx context.Context, req *pb.CreateUserRequest)
 				return err
 			}
 
-			// Send verification email
 			taskPayload := &worker.PayloadSendVerifyEmail{
-				Username:   user.FirstName + " " + user.LastName, // Use full name as display name
-				Email:      user.Email,
+				Username:   user.FirstName + " " + user.LastName,
 				SecretCode: secretCode,
 			}
 			opts := []asynq.Option{
@@ -82,7 +77,6 @@ func (server *Server) CreateUser(ctx context.Context, req *pb.CreateUserRequest)
 		},
 	}
 
-	// Set optional fields if provided
 	if req.GetProfilePictureUrl() != "" {
 		arg.ProfilePictureUrl.Valid = true
 		arg.ProfilePictureUrl.String = req.GetProfilePictureUrl()

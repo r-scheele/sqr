@@ -22,7 +22,6 @@ func (server *Server) LoginUser(ctx context.Context, req *pb.LoginUserRequest) (
 		return nil, invalidArgumentError(violations)
 	}
 
-	// Try to get user by email first (assuming username is actually email)
 	user, err := server.store.GetUserByEmail(ctx, req.GetUsername())
 	if err != nil {
 		if errors.Is(err, db.ErrRecordNotFound) {
@@ -36,12 +35,11 @@ func (server *Server) LoginUser(ctx context.Context, req *pb.LoginUserRequest) (
 		return nil, status.Errorf(codes.NotFound, "incorrect password")
 	}
 
-	// Create username for token from email or full name
 	username := user.FirstName + "_" + user.LastName
 
 	accessToken, accessPayload, err := server.tokenMaker.CreateToken(
 		username,
-		string(user.UserType), // Convert enum to string for role
+		string(user.UserType),
 		server.config.AccessTokenDuration,
 		token.TokenTypeAccessToken,
 	)

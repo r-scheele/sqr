@@ -20,13 +20,11 @@ func (server *Server) RefreshToken(ctx context.Context, req *pb.RefreshTokenRequ
 		return nil, invalidArgumentError(violations)
 	}
 
-	// Verify the refresh token
 	refreshPayload, err := server.tokenMaker.VerifyToken(req.GetRefreshToken(), token.TokenTypeRefreshToken)
 	if err != nil {
 		return nil, status.Errorf(codes.Unauthenticated, "invalid refresh token")
 	}
 
-	// Get session from database to ensure it's still valid
 	session, err := server.store.GetUserSessionByToken(ctx, req.GetRefreshToken())
 	if err != nil {
 		if errors.Is(err, db.ErrRecordNotFound) {
@@ -35,12 +33,10 @@ func (server *Server) RefreshToken(ctx context.Context, req *pb.RefreshTokenRequ
 		return nil, status.Errorf(codes.Internal, "failed to get session")
 	}
 
-	// Check if session is still active
 	if !session.IsActive.Bool || !session.IsActive.Valid {
 		return nil, status.Errorf(codes.Unauthenticated, "session is no longer active")
 	}
 
-	// Get user details to get the role for the new token
 	user, err := server.store.GetUserByID(ctx, session.UserID)
 	if err != nil {
 		if errors.Is(err, db.ErrRecordNotFound) {
@@ -49,7 +45,6 @@ func (server *Server) RefreshToken(ctx context.Context, req *pb.RefreshTokenRequ
 		return nil, status.Errorf(codes.Internal, "failed to get user")
 	}
 
-	// Create a new access token
 	accessToken, accessPayload, err := server.tokenMaker.CreateToken(
 		refreshPayload.Username,
 		string(user.UserType),
@@ -60,13 +55,13 @@ func (server *Server) RefreshToken(ctx context.Context, req *pb.RefreshTokenRequ
 		return nil, status.Errorf(codes.Internal, "failed to create access token")
 	}
 
-	// Update session activity (extend expiration if needed)
 	err = server.store.UpdateSessionActivity(ctx, db.UpdateSessionActivityParams{
 		SessionToken: req.GetRefreshToken(),
 		ExpiresAt:    refreshPayload.ExpiredAt, // Keep the same expiration
 	})
 	if err != nil {
 		// Log this error but don't fail the request
+
 		// The token refresh can still succeed even if we can't update the session
 	}
 
