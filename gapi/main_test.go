@@ -15,6 +15,11 @@ import (
 	"google.golang.org/grpc/metadata"
 )
 
+const (
+	authorizationHeader = "authorization"
+	authorizationBearer = "bearer"
+)
+
 func newTestServer(t *testing.T, store db.Store) *Server {
 	config := util.Config{
 		TokenSymmetricKey:    util.RandomString(32),

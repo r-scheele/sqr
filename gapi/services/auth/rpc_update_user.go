@@ -14,7 +14,7 @@ import (
 func (server *Server) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (*pb.UpdateUserResponse, error) {
 	violations := validateUpdateUserRequest(req)
 	if violations != nil {
-		return nil, invalidArgumentError(violations)
+		return nil, InvalidArgumentError(violations)
 	}
 
 	user, err := server.store.GetUserByEmail(ctx, req.GetUsername())

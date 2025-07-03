@@ -40,8 +40,8 @@ func (expected eqCreateUserTxParamsMatcher) Matches(x interface{}) bool {
 		return false
 	}
 
-	err = actualArg.AfterCreate(expected.user)
-	return err == nil
+	// Just verify that AfterCreate is not nil, don't execute it in the matcher
+	return actualArg.AfterCreate != nil
 }
 
 func (e eqCreateUserTxParamsMatcher) String() string {
@@ -98,10 +98,6 @@ func TestCreateUserAPI(t *testing.T) {
 						UserType:     user.UserType,
 					},
 				}
-				store.EXPECT().
-					CreateUserTx(gomock.Any(), EqCreateUserTxParams(arg, password, user)).
-					Times(1).
-					Return(db.CreateUserTxResult{User: user}, nil)
 
 				store.EXPECT().
 					CreateUserVerification(gomock.Any(), gomock.Any()).
@@ -112,6 +108,18 @@ func TestCreateUserAPI(t *testing.T) {
 					DistributeTaskSendVerifyEmail(gomock.Any(), gomock.Any(), gomock.Any()).
 					Times(1).
 					Return(nil)
+
+				store.EXPECT().
+					CreateUserTx(gomock.Any(), EqCreateUserTxParams(arg, password, user)).
+					Times(1).
+					DoAndReturn(func(ctx context.Context, arg db.CreateUserTxParams) (db.CreateUserTxResult, error) {
+						// Execute the AfterCreate callback to simulate the real transaction
+						err := arg.AfterCreate(user)
+						if err != nil {
+							return db.CreateUserTxResult{}, err
+						}
+						return db.CreateUserTxResult{User: user}, nil
+					})
 			},
 			checkResponse: func(t *testing.T, res *pb.CreateUserResponse, err error) {
 				require.NoError(t, err)

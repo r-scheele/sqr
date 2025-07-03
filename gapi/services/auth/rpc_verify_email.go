@@ -15,7 +15,7 @@ import (
 func (server *Server) VerifyEmail(ctx context.Context, req *pb.VerifyEmailRequest) (*pb.VerifyEmailResponse, error) {
 	violations := validateVerifyEmailRequest(req)
 	if violations != nil {
-		return nil, invalidArgumentError(violations)
+		return nil, InvalidArgumentError(violations)
 	}
 
 	arg := db.VerifyEmailTxParams{
