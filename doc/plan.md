@@ -1,16 +1,4 @@
-# 🏠 SQR Rental Pla### 🏠 **Tenants** - Property seekers looking for rental homes
-
-### 🏢 **Landlords** - Property owners listing and managing properties
-
-### 🔍 **Inspection Agents** - Professional inspectors providing third-party assessments
-
-### 👨‍💼 **Admins** - Platform administrators ensuring system integrity
-
----
-
-## 👤 TENANT USER JOURNEY & ACTIONS
-
-> *The tenant is the primary user of our platform - someone looking for a rental property in Nigeria*er-Centric Development Plan
+# 🏠 SQR Rental Platform - User-Centric Development Plan
 
 ## 📋 Overview
 
@@ -36,9 +24,9 @@ This document outlines the complete development roadmap for the SQR rental platf
 
 ---
 
-## � TENANT USER JOURNEY & ACTIONS
+## 👤 TENANT USER JOURNEY & ACTIONS
 
-*The tenant is the primary user of our platform - someone looking for a rental property in Nigeria*
+> *The tenant is the primary user of our platform - someone looking for a rental property in Nigeria*
 
 ### 🔐 1. Account Management & Onboarding
 
@@ -70,9 +58,9 @@ This document outlines the complete development roadmap for the SQR rental platf
 - 🔄 **Set location preferences** (preferred areas, commute distance)
 - 🔄 **Set budget range** and payment preferences  
 - 🔄 **Configure notification settings** (email, SMS, push)
-- � **Set property preferences** (size, amenities, property type)
+- 🔄 **Set property preferences** (size, amenities, property type)
 
-### � 2. Property Discovery & Search
+### 🔍 2. Property Discovery & Search
 
 #### 2.1 Browsing & Search 🔄 PENDING
 **User Story**: *"As a tenant, I want to find properties that match my needs and budget"*
@@ -356,7 +344,7 @@ This document outlines the complete development roadmap for the SQR rental platf
 - 🔄 **Schedule move-in inspection**
 - 🔄 **Complete move-in process**
 
-### � 5. Communication & Tenant Relations
+### 🔍 5. Communication & Tenant Relations
 
 #### 5.1 Messaging & Communication 🔄 PENDING
 **User Story**: *"As a landlord, I want to communicate with prospective and current tenants effectively"*
