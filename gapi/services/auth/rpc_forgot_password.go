@@ -19,7 +19,7 @@ import (
 func (server *Server) ForgotPassword(ctx context.Context, req *pb.ForgotPasswordRequest) (*pb.ForgotPasswordResponse, error) {
 	violations := validateForgotPasswordRequest(req)
 	if violations != nil {
-		return nil, invalidArgumentError(violations)
+		return nil, InvalidArgumentError(violations)
 	}
 
 	user, err := server.store.GetUserByEmail(ctx, req.GetEmail())

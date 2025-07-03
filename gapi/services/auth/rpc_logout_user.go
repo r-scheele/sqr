@@ -14,7 +14,7 @@ import (
 func (server *Server) LogoutUser(ctx context.Context, req *pb.LogoutUserRequest) (*pb.LogoutUserResponse, error) {
 	violations := validateLogoutUserRequest(req)
 	if violations != nil {
-		return nil, invalidArgumentError(violations)
+		return nil, InvalidArgumentError(violations)
 	}
 
 	_, err := server.tokenMaker.VerifyToken(req.GetRefreshToken(), token.TokenTypeRefreshToken)

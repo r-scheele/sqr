@@ -1,4 +1,4 @@
-package gapi
+package user
 
 import (
 	"context"

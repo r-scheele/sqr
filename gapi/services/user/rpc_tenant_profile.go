@@ -22,7 +22,7 @@ func (server *Server) GetTenantProfile(ctx context.Context, req *pb.GetTenantPro
 
 	authPayload, err := server.authorizeUser(ctx, []string{util.TenantRole, util.AdminRole})
 	if err != nil {
-		return nil, unauthenticatedError(err)
+		return nil, UnauthenticatedError(err)
 	}
 
 	authUser, err := server.store.GetUserByEmail(ctx, authPayload.Username)
@@ -62,12 +62,12 @@ func (server *Server) UpdateTenantProfile(ctx context.Context, req *pb.UpdateTen
 
 	violations := validateUpdateTenantProfileRequest(req)
 	if violations != nil {
-		return nil, invalidArgumentError(violations)
+		return nil, InvalidArgumentError(violations)
 	}
 
 	authPayload, err := server.authorizeUser(ctx, []string{util.TenantRole})
 	if err != nil {
-		return nil, unauthenticatedError(err)
+		return nil, UnauthenticatedError(err)
 	}
 
 	authUser, err := server.store.GetUserByEmail(ctx, authPayload.Username)
@@ -175,48 +175,48 @@ func (server *Server) UpdateTenantProfile(ctx context.Context, req *pb.UpdateTen
 
 func validateUpdateTenantProfileRequest(req *pb.UpdateTenantProfileRequest) (violations []*errdetails.BadRequest_FieldViolation) {
 	if req.GetUserId() <= 0 {
-		violations = append(violations, fieldViolation("user_id", ErrInvalidUserID))
+		violations = append(violations, FieldViolation("user_id", ErrInvalidUserID))
 	}
 
 	if req.MaxBudget != nil {
 		if err := val.ValidateMaxBudget(req.GetMaxBudget()); err != nil {
-			violations = append(violations, fieldViolation("max_budget", err))
+			violations = append(violations, FieldViolation("max_budget", err))
 		}
 	}
 
 	if len(req.PreferredAreas) > 0 {
 		if err := val.ValidatePreferredAreas(req.PreferredAreas); err != nil {
-			violations = append(violations, fieldViolation("preferred_areas", err))
+			violations = append(violations, FieldViolation("preferred_areas", err))
 		}
 	}
 
 	if req.AnnualIncome != nil {
 		if err := val.ValidateAnnualIncome(req.GetAnnualIncome()); err != nil {
-			violations = append(violations, fieldViolation("annual_income", err))
+			violations = append(violations, FieldViolation("annual_income", err))
 		}
 	}
 
 	if len(req.References) > 0 {
 		if err := val.ValidateReferences(req.References); err != nil {
-			violations = append(violations, fieldViolation("references", err))
+			violations = append(violations, FieldViolation("references", err))
 		}
 	}
 
 	if req.Occupation != nil {
 		if err := val.ValidateOccupation(req.GetOccupation()); err != nil {
-			violations = append(violations, fieldViolation("occupation", err))
+			violations = append(violations, FieldViolation("occupation", err))
 		}
 	}
 
 	if req.EmployerName != nil {
 		if err := val.ValidateEmployerInfo(req.GetEmployerName(), ""); err != nil {
-			violations = append(violations, fieldViolation("employer_name", err))
+			violations = append(violations, FieldViolation("employer_name", err))
 		}
 	}
 
 	if len(req.PreviousAddresses) > 0 {
 		if err := val.ValidatePreviousAddresses(req.PreviousAddresses); err != nil {
-			violations = append(violations, fieldViolation("previous_addresses", err))
+			violations = append(violations, FieldViolation("previous_addresses", err))
 		}
 	}
 

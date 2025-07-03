@@ -16,7 +16,7 @@ import (
 func (server *Server) ResetPassword(ctx context.Context, req *pb.ResetPasswordRequest) (*pb.ResetPasswordResponse, error) {
 	violations := validateResetPasswordRequest(req)
 	if violations != nil {
-		return nil, invalidArgumentError(violations)
+		return nil, InvalidArgumentError(violations)
 	}
 
 	verification, err := server.store.GetPasswordResetVerification(ctx, req.GetResetToken())
