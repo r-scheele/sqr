@@ -13,7 +13,9 @@ func TestSendEmailWithGmail(t *testing.T) {
 	}
 
 	config, err := util.LoadConfig("..")
-	require.NoError(t, err)
+	if err != nil {
+		t.Skipf("Skipping email test: config file not found (%v)", err)
+	}
 
 	sender := NewGmailSender(config.EmailSenderName, config.EmailSenderAddress, config.EmailSenderPassword)
 
